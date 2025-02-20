@@ -8,6 +8,7 @@ namespace SIMULATOR {
 		public:
 			simulator(std::ifstream& infile);
 			~simulator();
+		private:
 		};
 	}
 }
