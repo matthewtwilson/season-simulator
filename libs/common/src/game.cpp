@@ -7,7 +7,6 @@ namespace SIMULATOR {
 		: home_points(0)
 		, away_points(0)
 		, preseason(false)
-		, homeWinProbability(0.0)
 		, res(undefined)
 	{
 	}
@@ -18,33 +17,39 @@ namespace SIMULATOR {
 		, home_points(inhome_points)
 		, away_points(inaway_points)
 		, preseason(inpreseason)
-		, homeWinProbability(0.0)
 	{
+		game::result end;
 		if (inhome_points > inaway_points)
-			setResult(w_home);
+			end = { 1.0,0.0,0.0 };
 		else if (inaway_points > inhome_points)
-			setResult(w_away);
+			end = { 0.0,1.0,0.0 };
 		else
-			setResult(tied);
+			end = { 0.0,0.0,1.0 };
+		setResult(end);
 	}
 
 	game::~game()
 	{
 	}
 
-	void game::setResult(result r)
+	void game::setResult(result& r)
 	{
 		res = r;
 	}
 
-	game::result game::getResult() const
+	const game::result& game::getResult() const
 	{
 		return res;
 	}
 
-	double game::getProbability() const
+	void game::calculateProbability()
 	{
-		return homeWinProbability;
+		probability = { 0.5,0.5,0.0 };
+	}
+
+	const game::result& game::getProbability() const
+	{
+		return probability;
 	}
 
 	team* game::getHome() const
