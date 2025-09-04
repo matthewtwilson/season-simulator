@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
 	time(&endtime);
 
-	fprintf(stdout,"Ran in %I64d seconds\n",endtime-starttime);
+	std::cout << "Ran in " << endtime - starttime << " seconds\n";
 
 	return 0;
 }
