@@ -4,10 +4,11 @@
 
 namespace SIMULATOR {
 	game::game()
-		: home_points(0)
+		: home(nullptr)
+		, away(nullptr)
+		, home_points(0)
 		, away_points(0)
 		, preseason(false)
-		, res(undefined)
 	{
 	}
 
