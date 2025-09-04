@@ -39,4 +39,10 @@ namespace SIMULATOR {
 			++ties;
 	}
 
+	void team::initializeRecordBuckets(unsigned int sz)
+	{
+		recordBuckets.resize(sz);
+	}
+
+
 }
