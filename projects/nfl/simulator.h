@@ -9,6 +9,7 @@ namespace SIMULATOR {
 			simulator(std::ifstream& infile);
 			~simulator();
 		private:
+			virtual void initializeRecordLabels(unsigned int seasonLength) override;
 		};
 	}
 }
