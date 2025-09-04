@@ -12,6 +12,7 @@
 namespace SIMULATOR {
 	simulator::simulator(std::ifstream& infile)
 		: file(infile)
+		, points(0)
 	{
 	}
 
@@ -19,10 +20,10 @@ namespace SIMULATOR {
 	{
 	}
 
-	void simulator::processAndRun(unsigned long long runs, unsigned int tiePct)
+	void simulator::processAndRun(unsigned long long runs)
 	{
 		processFile();
-		runSimulation(runs, tiePct);
+		runSimulation(runs);
 	}
 
 	team* simulator::createTeam(const std::string& inName)
@@ -38,6 +39,20 @@ namespace SIMULATOR {
 	conference* simulator::createConference(const std::string& inName)
 	{
 		return new conference(inName);
+	}
+
+	void simulator::initializeRecordLabels(unsigned int seasonLength)
+	{
+		for (int i = 0; i < seasonLength + 1; ++i)
+		{
+			std::stringstream label;
+			label << i << "-" << seasonLength - i;
+			recordLabels.push_back(std::make_pair(true, label.str()));
+		}
+	}
+
+	void simulator::initialOutput()
+	{
 	}
 
 	void simulator::processFile()
@@ -91,8 +106,30 @@ namespace SIMULATOR {
 		}
 	}
 
-	void simulator::runSimulation(unsigned long long runs, unsigned int tiePct)
+	void simulator::runSimulation(unsigned long long runs)
 	{
+		double ppg = static_cast<double>(points) / static_cast<double>(playedGames.size());
+		std::cout << "PPG: " << ppg << std::endl;
+		std::cout << "Total League Games: " << playedGames.size() + futureGames.size() << std::endl;
+		std::cout << "League Games Played: " << playedGames.size() << std::endl;
+		std::cout << "Teams: " << teams.size() << std::endl;
+		unsigned int seasonLength = (2 * (playedGames.size() + futureGames.size())) / teams.size();
+		std::cout << "Team Season Length: " << seasonLength << std::endl;
+
+		initializeRecordLabels(seasonLength);
+		//Set Team Strengths and record buckets
+		for (const auto& it : teams)
+		{
+			it->initializeRecordBuckets(recordLabels.size());
+		}
+
+		//Set Game Probabilities
+		for (auto& it : futureGames)
+		{
+			it->calculateProbability();
+		}
+		initialOutput();
+		simulateFutureGames(runs);
 	}
 
 	void simulator::processConference(std::string& line)
@@ -204,6 +241,11 @@ namespace SIMULATOR {
 		return new game(home, away, home_points, away_points, preseason);
 	}
 
+	void simulator::simulateFutureGames(unsigned long long runs)
+	{
+		std::cerr << "unimplemented" << std::endl;
+		std::cout << "simulateFutureGames()" << std::endl;
+	}
 	team* simulator::getTeam(std::string& name) const
 	{
 		auto lambda = [&name](team* i) { return i->getName() == name; };
