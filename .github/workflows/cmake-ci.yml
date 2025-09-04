@@ -15,7 +15,7 @@ on:
       - projects/**/*
 
 env:
-  ALL_PROJECTS: "base nfl" # Add new projects here as needed
+  ALL_PROJECTS: "base nfl clubsoccer" # Add new projects here as needed
 
 jobs:
   build-and-analyze:

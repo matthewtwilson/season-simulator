@@ -11,3 +11,4 @@ add_subdirectory(libs)
 # Add the projects
 add_subdirectory(projects/base)
 add_subdirectory(projects/nfl)
+add_subdirectory(projects/clubsoccer)
