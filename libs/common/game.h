@@ -15,7 +15,7 @@ namespace SIMULATOR {
 		enum season { undefined, pre, regular, post };
 		void setResult(result& r);
 		const result& getResult() const;
-		void calculateProbability();
+		void setProbability(result& r);
 		const result& getProbability() const;
 		team* getHome() const;
 		team* getAway() const;

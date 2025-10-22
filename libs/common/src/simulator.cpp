@@ -13,7 +13,9 @@ namespace SIMULATOR {
 	simulator::simulator(std::ifstream& infile)
 		: file(infile)
 		, points(0)
+		, gen(rd())
 	{
+		
 	}
 
 	simulator::~simulator()
@@ -28,7 +30,7 @@ namespace SIMULATOR {
 
 	team* simulator::createTeam(const std::string& inName)
 	{
-		return new team(inName);
+		return new team(inName, 2);
 	}
 
 	division* simulator::createDivision(const std::string& inName)
@@ -53,6 +55,11 @@ namespace SIMULATOR {
 
 	void simulator::initialOutput()
 	{
+	}
+
+	unsigned int simulator::calculateRecordBucketFromResults(const std::vector<unsigned int>& real, const std::vector<unsigned int>& proj) const
+	{
+		return real[0] + proj[0];
 	}
 
 	void simulator::processFile()
@@ -113,7 +120,7 @@ namespace SIMULATOR {
 		std::cout << "Total League Games: " << playedGames.size() + futureGames.size() << std::endl;
 		std::cout << "League Games Played: " << playedGames.size() << std::endl;
 		std::cout << "Teams: " << teams.size() << std::endl;
-		unsigned int seasonLength = (2 * (playedGames.size() + futureGames.size())) / teams.size();
+		unsigned int seasonLength = ((2 * (playedGames.size() + futureGames.size())) + teams.size() - 1) / teams.size();
 		std::cout << "Team Season Length: " << seasonLength << std::endl;
 
 		initializeRecordLabels(seasonLength);
@@ -126,7 +133,7 @@ namespace SIMULATOR {
 		//Set Game Probabilities
 		for (auto& it : futureGames)
 		{
-			it->calculateProbability();
+			precalculateProbability(it);
 		}
 		initialOutput();
 		simulateFutureGames(runs);
@@ -215,6 +222,19 @@ namespace SIMULATOR {
 					homeTeam->addGame(homePts, awayPts);
 					awayTeam->addGame(awayPts, homePts);
 
+					std::vector<unsigned int> win = { 1,0 };
+					std::vector<unsigned int> loss = { 0,1 };
+
+					if(homePts > awayPts)
+					{
+						homeTeam->addResult(win);
+						awayTeam->addResult(loss);
+					}
+					else if (awayPts > homePts)
+					{
+						awayTeam->addResult(win);
+						homeTeam->addResult(loss);
+					}
 					//std::cout << "adding played regular season game " << away << " " << awayPts << " at " << home << " " << homePts << std::endl;
 				}
 				else
@@ -243,9 +263,96 @@ namespace SIMULATOR {
 
 	void simulator::simulateFutureGames(unsigned long long runs)
 	{
-		std::cerr << "unimplemented" << std::endl;
-		std::cout << "simulateFutureGames()" << std::endl;
+		auto checkpoint = runs / 20;
+		if (checkpoint < 1)
+			checkpoint = 1;
+		auto startTime = clock();
+
+		for (auto& r : recordLabels)
+		{
+			r.first = false;
+		}
+
+		for (unsigned long long run = 0; run < runs; ++run)
+		{
+			if (run % checkpoint == 0)
+			{
+				std::cerr << run << " runs complete in " << double(clock() - startTime) / (double)CLOCKS_PER_SEC << "seconds." << std::endl;
+			}
+
+			for (auto t : teams)
+			{
+				t->cleanupProjections();
+			}
+
+			for (auto g : futureGames)
+			{
+				simulateOneFutureGame(g);
+			}
+
+			for (auto t : teams)
+			{
+				auto& realResults = t->getResults();
+				auto& projResults = t->getProjectedResults();
+				auto bucket = calculateRecordBucketFromResults(realResults,projResults);
+				t->incrementRecordBucket(bucket);
+				recordLabels[bucket].first = true;
+			}
+
+		}
+
+		std::cout << "Team,";
+		for (auto& r : recordLabels)
+		{
+			if (r.first)
+				std::cout << r.second << ',';
+		}
+		std::cout << std::endl;
+
+		for (auto& t : teams)
+		{
+			std::cout << t->getName() << ',';
+			for (size_t i = 0; i < recordLabels.size(); ++i)
+			{
+				if (recordLabels[i].first)
+				{
+					std::cout << t->getRecordBuckets()[i] << ',';
+				}
+			}
+			std::cout << std::endl;
+		}
 	}
+
+	void simulator::precalculateProbability(game* g)
+	{
+		std::vector<double> res = { 0.5, 0.5};
+		g->setProbability(res);
+	}
+
+	void simulator::simulateOneFutureGame(game* g)
+	{
+		auto& weights = g->getProbability();
+		std::discrete_distribution<> d(weights.begin(), weights.end());
+		auto result = d(gen);
+		std::vector<unsigned int> win  = { 1,0 };
+		std::vector<unsigned int> loss = { 0,1 };
+		switch (result)
+		{
+		case 0:
+			g->getHome()->addProjectedResult(win);
+			g->getAway()->addProjectedResult(loss);
+			break;
+		case 1:
+			g->getHome()->addProjectedResult(loss);
+			g->getAway()->addProjectedResult(win);
+			break;
+		default:
+			std::cerr << "simulateOneFutureGame() failure" << std::endl;
+			break;
+		}
+
+	}
+
 	team* simulator::getTeam(std::string& name) const
 	{
 		auto lambda = [&name](team* i) { return i->getName() == name; };

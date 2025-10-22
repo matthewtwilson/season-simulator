@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <random>
 
 namespace SIMULATOR {
 	class team;
@@ -28,6 +29,17 @@ namespace SIMULATOR {
 		std::vector<std::pair<bool, std::string>> recordLabels;
 		virtual void initializeRecordLabels(unsigned int seasonLength);
 		virtual void initialOutput();
+		virtual unsigned int calculateRecordBucketFromResults(const std::vector<unsigned int>& real, const std::vector<unsigned int>& proj) const;
+		virtual void processRegularSeasonGame(std::string& line);
+		team* getTeam(std::string& name) const;
+		virtual game* createGame(team* home, team* away, const unsigned int home_points, const unsigned int away_points, const bool preseason); //factory method
+		virtual void precalculateProbability(game* g);
+		virtual void simulateOneFutureGame(game* g);
+
+		std::vector<game*> playedGames;
+		std::vector<game*> futureGames;
+		unsigned int points;
+		std::mt19937 gen;
 	private:
 		void processFile();
 		void runSimulation(unsigned long long runs);
@@ -35,18 +47,14 @@ namespace SIMULATOR {
 		virtual void processDivision(std::string& line);
 		virtual void processTeam(std::string& line);
 		virtual void processPreseasonGame(std::string& line);
-		virtual void processRegularSeasonGame(std::string& line);
 		virtual void processPostseasonGame(std::string& line);
-		virtual game* createGame(team* home, team* away, const unsigned int home_points, const unsigned int away_points, const bool preseason); //factory method
 		virtual void simulateFutureGames(unsigned long long runs);
-		team* getTeam(std::string& name) const;
 		division* getDivision(std::string& name) const;
 		conference* getConference(std::string& name) const;
 
 		std::ifstream& file;
-		std::vector<game*> playedGames;
-		std::vector<game*> futureGames;
-		unsigned int points;
+
+		std::random_device rd;
 	};
 
 }

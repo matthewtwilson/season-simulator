@@ -1,21 +1,19 @@
 #include "../team.h"
 #include <sstream>
 #include <cmath>
+#include <cassert>
 
 namespace SIMULATOR {
-	team::team(const std::string& inName)
+	team::team(const std::string& inName, unsigned int numResults)
 		: name(inName)
-		, wins(0)
-		, losses(0)
-		, ties(0)
 		, preseason_points_for(0)
 		, preseason_points_against(0)
 		, points_for(0)
 		, points_against(0)
-		, projected_wins(0)
-		, projected_losses(0)
-		, projected_ties(0)
+		, num_results(numResults)
 	{
+		results.resize(num_results, 0);
+		projected_results.resize(num_results, 0);
 	}
 
 	team::~team()
@@ -31,17 +29,63 @@ namespace SIMULATOR {
 	{
 		points_for += pf;
 		points_against += pa;
-		if (pf > pa)
-			++wins;
-		else if (pa > pf)
-			++losses;
-		else
-			++ties;
+	}
+
+	void team::addResult(std::vector<unsigned int>& result)
+	{
+		if (result.size() != results.size())
+		{
+			throw std::runtime_error("team::addResult vectors not same size");
+		}
+
+		for (int i = 0; i < result.size(); ++i)
+		{
+			results[i] += result[i];
+		}
+	}
+
+	void team::addProjectedResult(std::vector<unsigned int>& result)
+	{
+		if (result.size() != projected_results.size())
+		{
+			throw std::runtime_error("team::addProjectedResult vectors not same size");
+		}
+
+		for (int i = 0; i < result.size(); ++i)
+		{
+			projected_results[i] += result[i];
+		}
 	}
 
 	void team::initializeRecordBuckets(unsigned int sz)
 	{
-		recordBuckets.resize(sz);
+		recordBuckets.resize(sz,0);
+	}
+
+	const std::vector<unsigned int>& team::getResults() const
+	{
+		return results;
+	}
+
+	const std::vector<unsigned int>& team::getProjectedResults() const
+	{
+		return projected_results;
+	}
+
+	void team::cleanupProjections()
+	{
+		std::fill(projected_results.begin(), projected_results.end(), 0);
+	}
+
+	void team::incrementRecordBucket(unsigned int x)
+	{
+		assert(x < recordBuckets.size());
+		++recordBuckets[x];
+	}
+
+	const std::vector<unsigned int>& team::getRecordBuckets() const
+	{
+		return recordBuckets;
 	}
 
 

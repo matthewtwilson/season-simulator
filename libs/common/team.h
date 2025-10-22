@@ -6,21 +6,28 @@ namespace SIMULATOR {
 	class team
 	{
 	public:
-		team(const std::string& inName);
+		team(const std::string& inName, unsigned int numResults);
 		virtual ~team();
 		const std::string& getName() const;
 		void addGame(unsigned int pf, unsigned int pa);
+		void addResult(std::vector<unsigned int>& result);
+		void addProjectedResult(std::vector<unsigned int>& result);
 		void initializeRecordBuckets(unsigned int sz);
+		const std::vector<unsigned int>& getResults() const;
+		const std::vector<unsigned int>& getProjectedResults() const;
+		virtual void cleanupProjections();
+		void incrementRecordBucket(unsigned int x);
+		const std::vector<unsigned int>& getRecordBuckets() const;
 	protected:
 		//for some just index by # of wins, hockey goes by points (2 for win, 1 for OTL currently), soccer is 3 for a win, 1 for a tie
 		std::vector<unsigned int> recordBuckets;
-		unsigned int wins, losses, ties;
-		unsigned int projected_wins, projected_losses, projected_ties;
+		std::vector<unsigned int> results;
+		std::vector<unsigned int> projected_results;
 		unsigned int preseason_points_for, preseason_points_against;
 		unsigned int points_for, points_against;
-		double strength;
 	private:
 		std::string name;
+		unsigned int num_results;
 
 	};
 }

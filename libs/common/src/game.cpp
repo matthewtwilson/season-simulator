@@ -43,9 +43,9 @@ namespace SIMULATOR {
 		return res;
 	}
 
-	void game::calculateProbability()
+	void game::setProbability(result& r)
 	{
-		probability = { 0.5,0.5,0.0 };
+		probability = r;
 	}
 
 	const game::result& game::getProbability() const
