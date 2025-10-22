@@ -14,7 +14,7 @@ namespace SIMULATOR {
 			virtual unsigned int calculateRecordBucketFromResults(const std::vector<unsigned int>& real, const std::vector<unsigned int>& proj) const override;
 			virtual void processRegularSeasonGame(std::string& line) override;
 			virtual void precalculateProbability(game* g) override;
-			virtual void simulateOneFutureGame(game* g);
+			virtual void simulateOneFutureGame(game* g) override;
 		};
 	}
 }

@@ -54,7 +54,6 @@ namespace SIMULATOR {
 
 		std::ifstream& file;
 
-		std::random_device rd;
 	};
 
 }

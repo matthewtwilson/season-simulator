@@ -13,9 +13,8 @@ namespace SIMULATOR {
 	simulator::simulator(std::ifstream& infile)
 		: file(infile)
 		, points(0)
-		, gen(rd())
+		, gen(std::random_device{}()) // seed from a temporary device
 	{
-		
 	}
 
 	simulator::~simulator()
