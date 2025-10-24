@@ -18,6 +18,10 @@ namespace SIMULATOR {
 		virtual void cleanupProjections();
 		void incrementRecordBucket(unsigned int x);
 		const std::vector<unsigned int>& getRecordBuckets() const;
+		const unsigned int getPointsFor() const;
+		const unsigned int getPointsAgainst() const;
+		const unsigned int getGamesPlayed() const;
+		const unsigned int getProjectedGamesPlayed() const;
 	protected:
 		//for some just index by # of wins, hockey goes by points (2 for win, 1 for OTL currently), soccer is 3 for a win, 1 for a tie
 		std::vector<unsigned int> recordBuckets;
@@ -28,6 +32,8 @@ namespace SIMULATOR {
 	private:
 		std::string name;
 		unsigned int num_results;
+		unsigned int games_played;
+		unsigned int projected_games_played;
 
 	};
 }

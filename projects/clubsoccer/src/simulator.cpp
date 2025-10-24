@@ -104,37 +104,44 @@ namespace SIMULATOR{
 
 		void simulator::precalculateProbability(game* g)
 		{
-			std::vector<double> res = { 0.40, 0.40, 0.20 };
+			auto home_ppg = static_cast<double>(g->getHome()->getPointsFor()) / std::max(1u, g->getHome()->getGamesPlayed());
+			auto away_ppg = static_cast<double>(g->getAway()->getPointsFor()) / std::max(1u, g->getAway()->getGamesPlayed());
+			auto home_def_ppg = static_cast<double>(g->getHome()->getPointsAgainst()) / std::max(1u, g->getHome()->getGamesPlayed());
+			auto away_def_ppg = static_cast<double>(g->getAway()->getPointsAgainst()) / std::max(1u, g->getAway()->getGamesPlayed());
+			double league_ppg = static_cast<double>(points) / static_cast<double>(playedGames.size());
+
+			double home_exp = (home_ppg * away_def_ppg) / (league_ppg / 2.0);
+			double away_exp = (away_ppg * home_def_ppg) / (league_ppg / 2.0);	
+
+			std::vector<double> res = { home_exp, away_exp };
 			g->setProbability(res);
 		}
 
 		void simulator::simulateOneFutureGame(game* g)
 		{
-			auto& weights = g->getProbability();
-			std::discrete_distribution<> d(weights.begin(), weights.end());
-			auto result = d(gen);
+			std::poisson_distribution<int> home_distribution(g->getProbability()[0]);
+			std::poisson_distribution<int> away_distribution(g->getProbability()[1]);
+			int home_goals = home_distribution(gen);
+			int away_goals = away_distribution(gen);
+
 			std::vector<unsigned int> win = { 1,0,0 };
 			std::vector<unsigned int> loss = { 0,1,0 };
 			std::vector<unsigned int> tie = { 0,0,1 };
-			switch (result)
+			if (home_goals > away_goals)
 			{
-			case 0:
 				g->getHome()->addProjectedResult(win);
 				g->getAway()->addProjectedResult(loss);
-				break;
-			case 1:
+			}
+			else if (away_goals > home_goals)
+			{
 				g->getHome()->addProjectedResult(loss);
 				g->getAway()->addProjectedResult(win);
-				break;
-			case 2:
+			}
+			else
+			{
 				g->getHome()->addProjectedResult(tie);
 				g->getAway()->addProjectedResult(tie);
-				break;
-			default:
-				std::cerr << "simulateOneFutureGame() failure" << std::endl;
-				break;
 			}
-
 		}
 
 	}

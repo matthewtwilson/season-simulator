@@ -10,6 +10,8 @@ namespace SIMULATOR {
 		, preseason_points_against(0)
 		, points_for(0)
 		, points_against(0)
+		, games_played(0)
+		, projected_games_played(0)
 		, num_results(numResults)
 	{
 		results.resize(num_results, 0);
@@ -42,6 +44,8 @@ namespace SIMULATOR {
 		{
 			results[i] += result[i];
 		}
+
+		++games_played;
 	}
 
 	void team::addProjectedResult(std::vector<unsigned int>& result)
@@ -55,6 +59,8 @@ namespace SIMULATOR {
 		{
 			projected_results[i] += result[i];
 		}
+
+		++projected_games_played;
 	}
 
 	void team::initializeRecordBuckets(unsigned int sz)
@@ -75,6 +81,7 @@ namespace SIMULATOR {
 	void team::cleanupProjections()
 	{
 		std::fill(projected_results.begin(), projected_results.end(), 0);
+		projected_games_played = 0;
 	}
 
 	void team::incrementRecordBucket(unsigned int x)
@@ -86,6 +93,26 @@ namespace SIMULATOR {
 	const std::vector<unsigned int>& team::getRecordBuckets() const
 	{
 		return recordBuckets;
+	}
+
+	const unsigned int team::getPointsFor() const
+	{
+		return points_for;
+	}
+
+	const unsigned int team::getPointsAgainst() const
+	{
+		return points_against;
+	}
+
+	const unsigned int team::getGamesPlayed() const
+	{
+		return games_played;
+	}
+
+	const unsigned int team::getProjectedGamesPlayed() const
+	{
+		return projected_games_played;
 	}
 
 
