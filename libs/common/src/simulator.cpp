@@ -122,6 +122,18 @@ namespace SIMULATOR {
 		unsigned int seasonLength = ((2 * (playedGames.size() + futureGames.size())) + teams.size() - 1) / teams.size();
 		std::cout << "Team Season Length: " << seasonLength << std::endl;
 
+		std::cout << "Team Name,PFPG,PAPG" << std::endl;
+		for (const auto& it : teams)
+		{
+			std::cout
+				<< it->getName()
+				<< ","
+				<< static_cast<double>(it->getPointsFor()) / std::max(1u, it->getGamesPlayed())
+				<< "," 
+				<< static_cast<double>(it->getPointsAgainst()) / std::max(1u, it->getGamesPlayed()) 
+				<< std::endl;
+		}
+
 		initializeRecordLabels(seasonLength);
 		//Set Team Strengths and record buckets
 		for (const auto& it : teams)
