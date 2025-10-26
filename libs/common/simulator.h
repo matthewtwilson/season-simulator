@@ -49,6 +49,7 @@ namespace SIMULATOR {
 		virtual void processPreseasonGame(std::string& line);
 		virtual void processPostseasonGame(std::string& line);
 		virtual void simulateFutureGames(unsigned long long runs);
+		virtual void sortTeams();
 		division* getDivision(std::string& name) const;
 		conference* getConference(std::string& name) const;
 

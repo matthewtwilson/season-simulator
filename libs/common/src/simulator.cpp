@@ -310,6 +310,8 @@ namespace SIMULATOR {
 				recordLabels[bucket].first = true;
 			}
 
+			sortTeams();
+
 		}
 
 		std::cout << "Team,";
@@ -332,6 +334,16 @@ namespace SIMULATOR {
 			}
 			std::cout << std::endl;
 		}
+	}
+
+	void simulator::sortTeams()
+	{
+		std::sort(teams.begin(), teams.end(),
+			[this](team* a, team* b)
+			{
+				return calculateRecordBucketFromResults(a->getResults(),a->getProjectedResults()) >
+					calculateRecordBucketFromResults(b->getResults(), b->getProjectedResults());
+			});
 	}
 
 	void simulator::precalculateProbability(game* g)
