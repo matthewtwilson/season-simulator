@@ -22,6 +22,12 @@ namespace SIMULATOR {
 		const unsigned int getPointsAgainst() const;
 		const unsigned int getGamesPlayed() const;
 		const unsigned int getProjectedGamesPlayed() const;
+		void addProjectedGoals(unsigned int pf, unsigned int pa);
+		const unsigned int getProjectedPointsFor() const;
+		const unsigned int getProjectedPointsAgainst() const;
+		const unsigned int getRealShutouts() const;
+		const unsigned int getProjectedShutouts() const;
+
 	protected:
 		//for some just index by # of wins, hockey goes by points (2 for win, 1 for OTL currently), soccer is 3 for a win, 1 for a tie
 		std::vector<unsigned int> recordBuckets;
@@ -29,6 +35,11 @@ namespace SIMULATOR {
 		std::vector<unsigned int> projected_results;
 		unsigned int preseason_points_for, preseason_points_against;
 		unsigned int points_for, points_against;
+
+		// projected goal totals and shutouts (added)
+		unsigned int projected_points_for, projected_points_against;
+		unsigned int real_shutouts, projected_shutouts;
+
 	private:
 		std::string name;
 		unsigned int num_results;

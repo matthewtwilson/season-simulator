@@ -35,6 +35,7 @@ namespace SIMULATOR {
 		virtual game* createGame(team* home, team* away, const unsigned int home_points, const unsigned int away_points, const bool preseason); //factory method
 		virtual void precalculateProbability(game* g);
 		virtual void simulateOneFutureGame(game* g);
+		virtual void sortTeams();
 
 		std::vector<game*> playedGames;
 		std::vector<game*> futureGames;
@@ -49,7 +50,6 @@ namespace SIMULATOR {
 		virtual void processPreseasonGame(std::string& line);
 		virtual void processPostseasonGame(std::string& line);
 		virtual void simulateFutureGames(unsigned long long runs);
-		virtual void sortTeams();
 		division* getDivision(std::string& name) const;
 		conference* getConference(std::string& name) const;
 

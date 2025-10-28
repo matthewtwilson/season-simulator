@@ -15,6 +15,10 @@ namespace SIMULATOR {
 			virtual void processRegularSeasonGame(std::string& line) override;
 			virtual void precalculateProbability(game* g) override;
 			virtual void simulateOneFutureGame(game* g) override;
+			virtual void sortTeams() override;
+
+			// break ties in the half-open range [first,last)
+			void breakTie(std::vector<team*>::iterator first, std::vector<team*>::iterator last);
 		};
 	}
 }

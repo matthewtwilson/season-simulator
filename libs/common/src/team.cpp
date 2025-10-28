@@ -10,6 +10,10 @@ namespace SIMULATOR {
 		, preseason_points_against(0)
 		, points_for(0)
 		, points_against(0)
+		, projected_points_for(0)
+		, projected_points_against(0)
+		, real_shutouts(0)
+		, projected_shutouts(0)
 		, games_played(0)
 		, projected_games_played(0)
 		, num_results(numResults)
@@ -31,6 +35,7 @@ namespace SIMULATOR {
 	{
 		points_for += pf;
 		points_against += pa;
+		if (pa == 0) ++real_shutouts;
 	}
 
 	void team::addResult(std::vector<unsigned int>& result)
@@ -63,6 +68,13 @@ namespace SIMULATOR {
 		++projected_games_played;
 	}
 
+	void team::addProjectedGoals(unsigned int pf, unsigned int pa)
+	{
+		projected_points_for += pf;
+		projected_points_against += pa;
+		if (pa == 0) ++projected_shutouts;
+	}
+
 	void team::initializeRecordBuckets(unsigned int sz)
 	{
 		recordBuckets.resize(sz,0);
@@ -82,6 +94,9 @@ namespace SIMULATOR {
 	{
 		std::fill(projected_results.begin(), projected_results.end(), 0);
 		projected_games_played = 0;
+		projected_points_for = 0;
+		projected_points_against = 0;
+		projected_shutouts = 0;
 	}
 
 	void team::incrementRecordBucket(unsigned int x)
@@ -115,5 +130,24 @@ namespace SIMULATOR {
 		return projected_games_played;
 	}
 
+	const unsigned int team::getProjectedPointsFor() const
+	{
+		return projected_points_for;
+	}
+
+	const unsigned int team::getProjectedPointsAgainst() const
+	{
+		return projected_points_against;
+	}
+
+	const unsigned int team::getRealShutouts() const
+	{
+		return real_shutouts;
+	}
+
+	const unsigned int team::getProjectedShutouts() const
+	{
+		return projected_shutouts;
+	}
 
 }
