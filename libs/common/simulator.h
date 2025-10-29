@@ -18,6 +18,8 @@ namespace SIMULATOR {
 		simulator(std::ifstream& infile);
 		~simulator();
 		virtual void processAndRun(unsigned long long runs);
+		// allow external code (tests) to seed the RNG deterministically
+		void seed(unsigned int s);
 	protected:
 		virtual team* createTeam(const std::string& inName); //factory method
 		virtual division* createDivision(const std::string& inName); //factory method

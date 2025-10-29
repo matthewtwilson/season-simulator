@@ -21,6 +21,12 @@ namespace SIMULATOR {
 	{
 	}
 
+	// allow deterministic seeding from tests / external callers
+	void simulator::seed(unsigned int s)
+	{
+		gen.seed(s);
+	}
+
 	void simulator::processAndRun(unsigned long long runs)
 	{
 		processFile();
