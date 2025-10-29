@@ -154,6 +154,7 @@ namespace SIMULATOR {
 		}
 		initialOutput();
 		simulateFutureGames(runs);
+		output();
 	}
 
 	void simulator::processConference(std::string& line)
@@ -319,7 +320,10 @@ namespace SIMULATOR {
 			sortTeams();
 
 		}
+	}
 
+	void simulator::output()
+	{
 		std::cout << "Team,";
 		for (auto& r : recordLabels)
 		{
